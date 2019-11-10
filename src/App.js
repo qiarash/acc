@@ -1,26 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import {Admin, Resource} from 'react-admin'
+import restProvider from './rest-provider'
+import {ArticleList, ArticleEdit} from './containers/articles'
+import Nav from './layout/nav'
+import {createMuiTheme} from '@material-ui/core/styles'
+import Layout from './layout/index'
+import { createBrowserHistory as createHistory } from 'history'
+import './App.css'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
 
-export default App;
+const theme = createMuiTheme({
+  palette: {
+    primary: {main: '#1C7CD5'},
+    error: {main: '#D9534F'},
+    alternateTextColor: {main: '#fff'}
+  }
+})
+
+const App = () => {
+  let adminSettings = {
+    theme,
+    menu: Nav,
+    appLayout: Layout,
+    history: createHistory(),
+    dataProvider: restProvider('https://conduit.productionready.io/api')
+  }
+  return (<Admin {...adminSettings}>
+  <Resource name="articles" options={{
+      label: "Post",
+      name: 'article'
+    }} list={ArticleList} edit={ArticleEdit}/>
+</Admin>)}
+
+export default App
