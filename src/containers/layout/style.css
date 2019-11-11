@@ -1,0 +1,30 @@
+* {
+  outline: none;
+  box-sizing: border-box;
+  font-family: 'Helvetica Neue';
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body{
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+#root {
+  height: 100%;
+}
+
+a {
+  display: inline-block;
+  color: inherit;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+}

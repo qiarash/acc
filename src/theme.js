@@ -1,0 +1,16 @@
+export default {
+  dark4: '#373A3C',
+  dark3: '#55595C',
+  dark2: '#777',
+  dark1: '#818A91',
+  light: '#ddd',
+  primary: '#1C7CD5',
+  secondary: '#56C0E0',
+  success: '#5CB85C',
+  warning: '#F0AD4E',
+  failure: '#D9534F',
+  primaryLight: '#DCEDF6',
+  successLight: '#E2EED8',
+  warningLight: '#FCF7E4',
+  failureLight: '#EFDFDF',
+}
