@@ -37,6 +37,7 @@ export const Article = (obj = {}) => ({
     value: obj.tagList,
     label: 'tags',
     fieldLabel: 'tags',
+    resource: 'tags',
     type: fieldTypes.list,
     elementType: Tag
   },
@@ -48,7 +49,7 @@ export const Article = (obj = {}) => ({
     tableFormatter: val => val.length > 20
       ? val.slice(0, 20) + '...'
       : val,
-    type: fieldTypes.string
+    type: fieldTypes.longString
   },
   createdAt: {
     value: obj.createdAt,

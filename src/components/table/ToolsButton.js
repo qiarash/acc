@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import Button from 'Components/button'
 import THEME from 'Root/theme'
 import {darken} from 'polished'
+import DeleteModal from './DeleteModal'
 import {Link} from 'react-router-dom'
 import onClickOutside from "react-onclickoutside";
 
@@ -47,17 +48,31 @@ const Wrapper = styled.div `
   }
 `
 
-function ToolsButton({resource, item, opened, onClick, close}) {
+const ArrowDown = styled.span`
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  margin-left: 10px;
+  border-top: 5px solid #fff;
+`
+
+function ToolsButton({resource, item, opened, onClick, close, deletedCb}) {
   ToolsButton.close = () => close();
   return (<Wrapper opened={opened}>
-    <Button width="50px" bgColor={opened
+    <Button width="auto" bgColor={opened
         ? darken(.1, THEME.secondary)
-        : THEME.secondary} styleType="none" color='#fff' onClick={onClick}>...</Button>
+        : THEME.secondary} styleType="none" color='#fff' onClick={onClick}>
+        ...
+        <ArrowDown />
+      </Button>
     <ul>
       <li>
         <Link to={`/${resource}/edit/${item.slug.value}`}>edit</Link>
       </li>
-      <li><Button styleType='none' bgColor={'transparent'} styles={{border: 0, textAlign: 'left', fontWeight: 200}}>delete</Button></li>
+      <li>
+        <DeleteModal resource={resource} item={item} deletedCb={deletedCb}/>
+      </li>
     </ul>
   </Wrapper>)
 }

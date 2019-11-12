@@ -1,5 +1,7 @@
 export const isEmpty = thing => !thing || thing === '' || (Object.entries(thing).length === 0 && thing.constructor === Object)
 
+export const testRegex = (regex, stringToTest) => new RegExp(regex).test(stringToTest)
+
 export const fieldErrors = {
   minLength: 'minLength',
   required: 'required',
@@ -11,6 +13,11 @@ export const validateField = (field, fieldValue) => {
     errors.push({
       type: fieldErrors.required,
       desc: field.notEmptyError || 'Required field'
+    })
+    if (field.regex && !isEmpty(fieldValue) && !testRegex(field.regex, fieldValue))
+    errors.push({
+      type: fieldErrors.regex,
+      desc: field.regexError || 'Format is incorrect'
     })
   if (field.customValidators && Array.isArray(field.customValidators)) {
     for (let i = 0; i < field.customValidators.length; i++) {

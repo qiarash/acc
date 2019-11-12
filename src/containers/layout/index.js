@@ -1,10 +1,12 @@
 import React, {useState} from 'react'
+import {connect} from 'react-redux'
 import routes from 'Root/routes'
 import styled from 'styled-components'
 import {Link} from 'react-router-dom'
 import Button from 'Components/button'
 import {FaBars, FaTimes} from 'react-icons/fa'
 import media from 'Utils/styles'
+import store from 'store'
 import './style.css'
 
 const Wrapper = styled.div `
@@ -15,6 +17,12 @@ const Wrapper = styled.div `
   flex-direction: ${p => p.row
   ? 'row'
   : 'column'};
+
+  ${media.xs`
+    button {
+      padding: 8px
+    }
+  `}
 `
 
 const Side = styled.div `
@@ -96,6 +104,28 @@ const StyledButton = styled(Button)`
     display: block
   `};
 `
+const NameHolder = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 1;
+  span {
+    margin-left: 20px;
+  }
+  ${media.sm`
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex: 1;
+    h3{
+      padding: 0;
+    }
+    span {
+      margin: 0;
+    }
+  `};
+`
 const Overlay = styled.div`
   position: absolute;
   left: 0;
@@ -109,7 +139,7 @@ const Overlay = styled.div`
   visibility: ${p => p.visible? 'visible': 'hidden' };
 `
 
-let Layout = ({location, children}) => {
+let Layout = ({user, location, children,logout}) => {
   let [menuOpened, setMenuOpened] = useState(false)
   let currentRoute = routes.find(r => r.path === location.pathname)
   let noLayout = currentRoute && currentRoute.noLayout
@@ -118,9 +148,14 @@ let Layout = ({location, children}) => {
   return (<Wrapper>
     <Header>
       <StyledButton width='auto' styles={{marginRight: 20}} onClick={()=>setMenuOpened(!menuOpened)} icon={menuOpened?<FaTimes />:<FaBars />} />
+      <NameHolder>
       <h3>Arvan Challenge</h3>
-      <span style={{flex: 1, marginLeft: 20}}>welcome dashaq</span>
-      <Button width="auto">Logout</Button>
+      <span style={{flex: 1}}>welcome {user && user.username}</span>
+    </NameHolder>
+      <Link to="/login"><Button onClick={() => {
+        store.remove('token')
+        logout()
+      }} width="auto">Logout</Button></Link>
     </Header>
     <Wrapper row={true}>
       <Overlay visible={menuOpened} onClick={()=>setMenuOpened(false)}/>
@@ -140,4 +175,4 @@ let Layout = ({location, children}) => {
   </Wrapper>)
 }
 
-export default Layout
+export default connect(state => ({user: state.user}), {logout: () => ({type: 'LOGOUT'})})(Layout)

@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import Button from 'Components/button'
+import media from 'Utils/styles'
 
 export const StyledSubmit = styled(Button)`
 `
@@ -10,9 +11,9 @@ export const StyledInput = styled.input `
   border: 1px solid ${p => p.hasError
   ? p.theme.failure
   : p.theme.light};
+  background: #fff;
   transition: border ease .3s;
   box-shadow: none;
-  background: none;
   font-size: 16px;
   text-align: left;
   margin-bottom: ${p => p.hasError
@@ -51,29 +52,74 @@ export const StyledInput = styled.input `
 
 `
 
+export const StyledTextarea = styled.textarea`
+  width: 100%;
+  border-radius: 4px;
+  padding: 10px 12px;
+  border: 1px solid ${p => p.hasError
+  ? p.theme.failure
+  : p.theme.light};
+  transition: border ease .3s;
+  box-shadow: none;
+  background: none;
+  font-size: 16px;
+  text-align: left;
+  resize: none;
+  max-height: 200px;
+  height: 200px;
+  margin-bottom: ${p => p.hasError
+    ? 0
+    : '25px'};
+`
+
 export const FieldsWrapper = styled.div `
-    flex-grow: 1;
     justify-content: center;
     align-items: center;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    flex: ${p => p.bSide? 1 : 2};
+
+    ${p => p.bSide && `
+      padding-left: 25px;
+    `}
+
+    ${media.sm`
+      padding: 0;
+      width: 100%;
+    `}
 `
 export const FormWrapper = styled.div `
   display: flex;
   flex: 1;
   flex-direction: column;
 
-  form .lds-ripple{
-    transform: scale(.5);
-    position: relative;
-    top: -20px;
+  form {
+
+    .lds-ripple{
+      transform: scale(.5);
+      position: relative;
+      top: -20px;
+    }
   }
 `
 
+export const SectionWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  ${media.sm`
+    flex-direction: column;
+  `}
+`
+
 export const StyledTitle = styled.div `
-  font-size: 13px;
-  margin-bottom: 16px;
+  font-size: 47px;
+  margin: 26px 0;
+  color: ${p => p.theme.dark2};
+  text-transform: uppercase;
 `
 
 export const LogoWrapper = styled.div `
@@ -112,8 +158,8 @@ export const FieldTitle = styled.span `
   font-size: 16px;
   align-self: flex-start;
   color: ${p => p.hasError
-    ? p.theme.failure
-    : p.theme.dark4};
+  ? p.theme.failure
+  : p.theme.dark4};
 `
 
 export const StyledButton = styled(Button)`

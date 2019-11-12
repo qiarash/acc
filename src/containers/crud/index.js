@@ -25,7 +25,9 @@ let ResourcePage = ({resource, model, name, match, history}) => {
       loading
         ? <Loading/>
         : <React.Fragment>
-            <Table data={data} resource={resource}/>
+            <Table page={page} data={data} resource={resource} deletedCb={slug => {
+              setData(data.filter(d => d.slug.value !== slug))
+            }}/>
             <div className='pagination-wrapper'>
               <ReactPaginate
                 disableInitialCallback={true}

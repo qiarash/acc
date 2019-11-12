@@ -6,14 +6,9 @@ import ToolsButton from './ToolsButton'
 import media from 'Utils/styles'
 
 const TableWrapper = styled.div `
-  ${'' /* max-width: calc(100vw - 320px); */}
-  ${'' /* max-height: 70vh; */}
-  ${'' /* overflow-x: auto;
-  overflow-y: auto; */}
-  ${media.md`
+  ${media.sm`
      overflow-x: auto;
   `};
-  ${'' /* */}
 `
 
 const StyledTable = styled.table `
@@ -57,6 +52,7 @@ const Td = styled.td `
 let Table = ({
   resource,
   data,
+  deletedCb,
   page = 1
 }) => {
   let [openMenuSlug, setOpenMenuslug] = useState(null)
@@ -73,7 +69,7 @@ let Table = ({
       <TableBody>
         {
           data.map((row, index) => <TableRow key={index}>
-            <Td>{(page - 1) * 10 + index + 1}</Td>
+            <Td>{((page - 1) * 10) + index + 1}</Td>
             {
               Object.entries(row).map(([key, val]) => !val.hiddenInTable && <Td key={key}>
                 <TableCell obj={val}/>
@@ -85,7 +81,11 @@ let Table = ({
                     openMenuSlug === row.slug
                     ? null
                     : row.slug)
-                }} close={() => setOpenMenuslug(null)} resource={resource} item={row} opened={openMenuSlug === row.slug}/>
+                }} close={() => setOpenMenuslug(null)}
+                resource={resource}
+                item={row}
+                deletedCb={deletedCb}
+                opened={openMenuSlug === row.slug}/>
             </Td>
           </TableRow>)
         }

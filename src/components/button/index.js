@@ -43,6 +43,13 @@ const StyledButton = styled.button `
             ? p.theme.secondary
             : p.borderColor || p.color || p.theme.primaryColor};
 
+  .lds-ripple{
+    transform: scale(.5);
+    position: relative;
+    top: -10px;
+    height: 20px;
+  }
+
 `
 
 let Button = ({

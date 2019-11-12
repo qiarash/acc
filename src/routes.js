@@ -17,6 +17,7 @@ export default [
   },
   {
     path: '/register',
+    noLayout: true,
     name: 'register',
     Component: RegisterPage
   },

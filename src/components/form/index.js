@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 import {validateField, isEmpty, capitalize} from "Utils"
+import {fieldTypes} from "Root/models"
+import List from "./List"
 import {
   StyledTitle,
   FieldError,
@@ -7,11 +9,14 @@ import {
   FieldTitle,
   InputWrapper,
   FixedTitle,
+  StyledTextarea,
   StyledInput,
   FieldsWrapper,
-  StyledSubmit,
+  SectionWrapper,
+  StyledSubmit
 } from './styled'
 
+const bSide = [fieldTypes.list]
 
 class Form extends Component {
 
@@ -31,14 +36,15 @@ class Form extends Component {
 
   }
 
-  componentDidMount(){
+  componentDidMount() {
+    console.log('mount')
     this.initializeForm()
   }
 
   initializeForm() {
     const {data} = this.props
-    let fields = this.props.fields
-    console.log(data, fields)
+    let fields = Array.from(this.props.fields)
+    console.log('====props.fields', fields)
     let values = {}
     if (data && !fields.length) {
       let entries = Object.entries(data)
@@ -51,7 +57,8 @@ class Form extends Component {
             value: val.value || '',
             type: val.type,
             required: val.required,
-            order: val.formOrder || 0
+            order: val.formOrder || 0,
+            resource: val.resource
           })
       }
       fields.sort((a, b) => a.order - b.order)
@@ -59,6 +66,7 @@ class Form extends Component {
 
     for (let i = 0; i < fields.length; i++) {
       let fld = fields[i]
+      console.log(fld.value)
       values[fld.name] = fld.value || ''
     }
 
@@ -66,7 +74,7 @@ class Form extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if(this.props.data && this.props.data.slug && this.props.data.slug.value !== prevProps.data.slug.value)
+    if (this.props.data && this.props.data.slug && this.props.data.slug.value !== prevProps.data.slug.value)
       this.initializeForm()
     if (prevProps.errorInResponse !== this.props.errorInResponse) {
       this.setState({loading: false})
@@ -74,7 +82,6 @@ class Form extends Component {
   }
 
   handleChange({field, value}) {
-    console.log(field, value)
     let errors = validateField(this.state.fields.find(f => f.name === field), value)
     this.setState({
       values: {
@@ -123,46 +130,66 @@ class Form extends Component {
 
   render() {
     const {fields, loading} = this.state
-    const {submitButtonText, title, extra} = this.props
+    const {submitButtonText, title, extra, submitButtonFullWidth} = this.props
+    let bSideInputs = fields && fields.filter(f => bSide.includes(f.type))
     return (<FormWrapper>
-      <form onSubmit={this.handleSubmit} autoComplete="off">
+      <form onSubmit={this.handleSubmit} noValidate autoComplete="off">
+        <SectionWrapper>
         <FieldsWrapper>
           {title !== '' && <StyledTitle>{title}</StyledTitle>}
-          {
-            fields && fields.map(f => {
-              let inputProps = {
-                name: f.name,
-                options: f.options,
-                hasError: f.errors && f.errors.length > 0,
-                value: this.state.values[f.name],
-                onChange: ({target}) => this.handleChange({field: target.name, value: target.value}),
-                type: f.type || 'text',
-                placeholder: f.placeholder || '',
-                fixedTitle: f.fixedTitle
-              }
-              return (<React.Fragment key={f.name}>
-                <FieldTitle hasError={inputProps.hasError}>
-                  {f.placeholder}
-                </FieldTitle>
-                <Input {...inputProps}/> {
-                  f.errors && f.errors.slice(0, 1).map((e, index) => <FieldError key={index}>
-                    {e.desc}
-                  </FieldError>)
-                }
-              </React.Fragment>)
-            })
-          }
+          {fields && fields.filter(f => !bSide.includes(f.type)).map(f => (<InputHolder f={f}
+            key={f.name}
+            value={this.state.values[f.name]}
+            change={this.handleChange}/>))}
         </FieldsWrapper>
+        {bSideInputs && bSideInputs.length > 0 && <FieldsWrapper bSide>
+          {fields && bSideInputs.map(f => (<InputHolder f={f}
+            key={f.name}
+            value={this.state.values[f.name]}
+            change={this.handleChange}/>))}
+          </FieldsWrapper>}
+        </SectionWrapper>
         {extra && extra}
-        <StyledSubmit styles={{height: 35, width: 100, paddingTop: 8}} loading={loading} styleType='primary' type="submit">{submitButtonText}</StyledSubmit>
+        <StyledSubmit styles={{
+            height: 35,
+            width: submitButtonFullWidth?'100%':100,
+            paddingTop: 8
+          }} loading={loading} styleType='primary' type="submit">{submitButtonText}</StyledSubmit>
       </form>
     </FormWrapper>)
   }
 }
+
+const InputHolder = ({f, value, change}) => {
+  let inputProps = {
+    ...f,
+    name: f.name,
+    options: f.options,
+    hasError: f.errors && f.errors.length > 0,
+    value,
+    onChange: ({target}) => change({field: target.name, value: target.value}),
+    type: f.type || 'text',
+    placeholder: f.placeholder || '',
+    fixedTitle: f.fixedTitle
+  }
+  return (<React.Fragment>
+    <FieldTitle hasError={inputProps.hasError}>
+      {f.placeholder}
+    </FieldTitle>
+    <Input {...inputProps}/> {
+      f.errors && f.errors.slice(0, 1).map((e, index) => (<FieldError key={index}>
+        {e.desc}
+      </FieldError>))
+    }
+  </React.Fragment>)
+}
+
 const Input = (props) => {
   switch (props.type) {
-      // case 'select':
-      //   return (<Select {...props}/>)
+      case fieldTypes.list:
+        return (<List {...props}/>)
+      case fieldTypes.longString:
+        return (<StyledTextarea {...props}>{props.value}</StyledTextarea>)
     default:
       if (props.fixedTitle)
         return (<InputWrapper>
