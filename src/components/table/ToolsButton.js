@@ -1,9 +1,15 @@
 import React from 'react'
-import styled from  'styled-components'
-import Button from  'Components/button'
+import styled from 'styled-components'
+import Button from 'Components/button'
+import THEME from 'Root/theme'
+import {darken} from 'polished'
+import {Link} from 'react-router-dom'
+import onClickOutside from "react-onclickoutside";
 
-const Wrapper = styled.div`
+const Wrapper = styled.div `
   position: relative;
+  justify-content: flex-end;
+  display: flex;
 
   ul {
     position: absolute;
@@ -14,15 +20,22 @@ const Wrapper = styled.div`
     top: 100%;
     right: 0;
     border-radius: 4px;
-    opacity: ${p => p.opened? 1: 0};
-    visibility: ${p => p.opened? 'visible': 'hidden'};
+    opacity: ${p => p.opened
+  ? 1
+  : 0};
+    visibility: ${p => p.opened
+    ? 'visible'
+    : 'hidden'};
     transition: all ease .3s;
     list-style: none;
     border: 1px solid ${p => p.theme.light};
     background: #fff;
 
     li{
-      padding: 15px 12px;
+      a, button{
+        display: block;
+        padding: 15px 12px;
+      }
       border-bottom: 1px solid ${p => p.theme.light};
       color: ${p => p.theme.dark4};
       font-weight: 300;
@@ -34,16 +47,23 @@ const Wrapper = styled.div`
   }
 `
 
-const ToolsButton = ({resource, item, opened, onClick}) => {
-  return(
-    <Wrapper opened={opened}>
-      <Button styleType="primary" onClick={onClick}>...</Button>
-      <ul>
-        <li>edit</li>
-        <li>delete</li>
-      </ul>
-    </Wrapper>
-  )
+function ToolsButton({resource, item, opened, onClick, close}) {
+  ToolsButton.close = () => close();
+  return (<Wrapper opened={opened}>
+    <Button width="50px" bgColor={opened
+        ? darken(.1, THEME.secondary)
+        : THEME.secondary} styleType="none" color='#fff' onClick={onClick}>...</Button>
+    <ul>
+      <li>
+        <Link to={`/${resource}/edit/${item.slug.value}`}>edit</Link>
+      </li>
+      <li><Button styleType='none' bgColor={'transparent'} styles={{border: 0, textAlign: 'left', fontWeight: 200}}>delete</Button></li>
+    </ul>
+  </Wrapper>)
 }
 
-export default ToolsButton
+const clickOutsideConfig = {
+  handleClickOutside: () => ToolsButton.close
+};
+
+export default onClickOutside(ToolsButton, clickOutsideConfig)

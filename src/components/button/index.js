@@ -54,14 +54,14 @@ let Button = ({
   icon,
   ...props
 }) => {
-  return (<StyledButton {...props} style={styles} disabled={disabled} loading={loading} onClick={() => {
+  return (<StyledButton {...props} style={styles} disabled={disabled} onClick={() => {
       if (loading || disabled)
         return null
       onClick()
     }}>
     {
       loading
-        ? <Loading/>
+        ? <Loading light/>
         : <React.Fragment>
             {icon && <span className="button-icon">{icon}</span>}
             {children}

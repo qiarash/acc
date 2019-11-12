@@ -11,8 +11,8 @@ const Wrapper = styled.div `
   align-items: center;
 `
 
-let Loading = () => (<Wrapper>
-  <div className="lds-ripple">
+let Loading = ({light = false}) => (<Wrapper>
+  <div className={light?"lds-ripple light":"lds-ripple"}>
     <div></div>
     <div></div>
   </div>

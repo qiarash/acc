@@ -6,12 +6,14 @@ import ToolsButton from './ToolsButton'
 import media from 'Utils/styles'
 
 const TableWrapper = styled.div `
-  max-width: calc(100vw - 320px);
-  overflow-x: auto;
-  overflow-y: hidden;
+  ${'' /* max-width: calc(100vw - 320px); */}
+  ${'' /* max-height: 70vh; */}
+  ${'' /* overflow-x: auto;
+  overflow-y: auto; */}
   ${media.md`
-    max-width: 100%
+     overflow-x: auto;
   `};
+  ${'' /* */}
 `
 
 const StyledTable = styled.table `
@@ -70,7 +72,7 @@ let Table = ({
       </TableHeader>
       <TableBody>
         {
-          data.map((row, index) => <TableRow key={row.slug}>
+          data.map((row, index) => <TableRow key={index}>
             <Td>{(page - 1) * 10 + index + 1}</Td>
             {
               Object.entries(row).map(([key, val]) => !val.hiddenInTable && <Td key={key}>
@@ -83,7 +85,7 @@ let Table = ({
                     openMenuSlug === row.slug
                     ? null
                     : row.slug)
-                }} resource={resource} item={row} opened={openMenuSlug === row.slug}/>
+                }} close={() => setOpenMenuslug(null)} resource={resource} item={row} opened={openMenuSlug === row.slug}/>
             </Td>
           </TableRow>)
         }
@@ -104,10 +106,10 @@ const TableCell = ({
     case fieldTypes.date:
       return <Moment format="MMMM DD, YYYY">{value}</Moment>
     case fieldTypes.list:
-      return value.map((v, i) => <React.Fragment key={i}>
+      return value.length > 0?value.map((v, i) => <React.Fragment key={i}>
         {v}
         {i !== value.length - 1 && ', '}
-      </React.Fragment>)
+      </React.Fragment>):'-'
     default:
       return tableFormatter
         ? tableFormatter(value)

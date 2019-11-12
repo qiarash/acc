@@ -3,7 +3,7 @@ import routes from 'Root/routes'
 import styled from 'styled-components'
 import {Link} from 'react-router-dom'
 import Button from 'Components/button'
-import {FaBars} from 'react-icons/fa'
+import {FaBars, FaTimes} from 'react-icons/fa'
 import media from 'Utils/styles'
 import './style.css'
 
@@ -25,6 +25,7 @@ const Side = styled.div `
   flex-grow: 0;
   flex-shrink: 0;
   display: flex;
+  z-index: 10;
   flex-direction: column;
   transition: all ease .3s;
 
@@ -63,6 +64,11 @@ const Main = styled.div `
   flex-direction: column;
   flex: 1;
   padding: 24px 30px;
+  max-height: 100%;
+  overflow-y: auto;
+  ${media.md`
+    width: 100vw;
+  `};
 `
 
 const SideMenuItem = styled.div`
@@ -80,8 +86,8 @@ const SideMenuItemLabel = styled.div`
 `
 
 const StyledLink = styled(Link)`
-  :hover {${p => !p.active && `background: rgba(255,255,255,.1)`};}
-  ${p => p.active && `background: rgba(255,255,255,.2)`};
+  :hover {${p => !p.isActive && `background: rgba(255,255,255,.1)`};}
+  ${p => p.isActive && `background: rgba(255,255,255,.2)`};
 `
 
 const StyledButton = styled(Button)`
@@ -89,6 +95,18 @@ const StyledButton = styled(Button)`
   ${media.md`
     display: block
   `};
+`
+const Overlay = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 9;
+  background: rgba(0,0,0,.7);
+  transition: all ease .3s;
+  opacity: ${p => p.visible? 1: 0 };
+  visibility: ${p => p.visible? 'visible': 'hidden' };
 `
 
 let Layout = ({location, children}) => {
@@ -99,18 +117,19 @@ let Layout = ({location, children}) => {
     return (children)
   return (<Wrapper>
     <Header>
-      <StyledButton width='auto' styles={{marginRight: 20}} onClick={()=>setMenuOpened(true)} icon={<FaBars />} />
+      <StyledButton width='auto' styles={{marginRight: 20}} onClick={()=>setMenuOpened(!menuOpened)} icon={menuOpened?<FaTimes />:<FaBars />} />
       <h3>Arvan Challenge</h3>
       <span style={{flex: 1, marginLeft: 20}}>welcome dashaq</span>
       <Button width="auto">Logout</Button>
     </Header>
     <Wrapper row={true}>
+      <Overlay visible={menuOpened} onClick={()=>setMenuOpened(false)}/>
       <Side opened={menuOpened}>
         {routes.filter(r => r.resource).map(route =>
           <SideMenuItem key={route.name}>
             <SideMenuItemLabel>{route.label}</SideMenuItemLabel>
-            <StyledLink to={route.path} active={route.path === location.pathname} onClick={()=>setMenuOpened(false)}>All {route.resource}</StyledLink>
-            <StyledLink to={route.path + '/create'} active={route.path + '/create' === location.pathname}>New {route.resource.slice(0, -1)}</StyledLink>
+            <StyledLink to={route.path} isActive={route.path === location.pathname} onClick={()=>setMenuOpened(false)}>All {route.resource}</StyledLink>
+            <StyledLink to={route.path + '/create'} isActive={route.path + '/create' === location.pathname} onClick={()=>setMenuOpened(false)}>New {route.resource.slice(0, -1)}</StyledLink>
           </SideMenuItem>
         )}
       </Side>

@@ -25,7 +25,7 @@ export const apiCall = (path, method = 'get', payload) => new Promise((resolve, 
         resolve(data)
     else
       reject({error: statusText});
-    
+
   }).catch(error => {
     if (error.response) {
       console.log(error.response.data);
@@ -43,3 +43,4 @@ export const apiCall = (path, method = 'get', payload) => new Promise((resolve, 
 })
 
 export const getData = (resourceName, page = 1) => apiCall(`${resourceName}?limit=${paginationSize}&offset=${(page-1)*paginationSize}`)
+export const getSingleResource = (resourceName, slug) => apiCall(`${resourceName}/${slug}`)
